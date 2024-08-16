@@ -29,36 +29,21 @@ async function fetchProductData(url) {
 
     if(!result.Product.Name) {
         const name = getProductName(body);
-        if (name) {
-            result.Product.Name = name
-        }
-        else {
-            result.Product.Name = 'Not Found'
-        }
+        result.Product.Name = name || 'Not Found';
     }
     
     if(!result.Product.Price) {
         const price = getProductPrice(body);
-        if (price) {
-            result.Product.Price = price
-        }
-        else {
-            result.Product.Price = 'Not Found'
-        }
+        result.Product.Price = price || 'Not Found'
     }
 
     if(!result.Product.Currency) {
         const currency = getProductCurrency(body);
-        if(currency) {
-            result.Product.Currency = currency
-        }
-        else {
-            result.Product.Currency = 'Not Found'
-        }
+        result.Product.Currency = currency || 'Not Found'
     }
 
     const images = getProductImages(body);
-    console.log(images)
+
     if(images) {
         if(!result.Product.Images) {
             result.Product.Images = images

@@ -19,14 +19,7 @@ module.exports = async function getHTMLBody(url) {
 
         const metaRefresh = $('meta[http-equiv="refresh"]');
         if(metaRefresh.length > 0) {
-            const metaContent = $('meta[http-equiv="refresh"]').attr('content')
-            const redirect = url + '?&' + metaContent.substring(metaContent.lastIndexOf('bm-verify'), metaContent.length - 1)
-            headers.Cookie = firstRequest.headers['set-cookie'][0]
-
-            const secondRequest = await axios.get(redirect,{headers: headers}).catch(error => {
-                console.log(`2`,error)
-            })
-            return (secondRequest.data); 
+            retryWithCookies($, firstRequest);
         }
         else {
             return (firstRequest.data);
@@ -37,4 +30,15 @@ module.exports = async function getHTMLBody(url) {
             return useWebdriver(url)
         }
     }
+}
+
+async function retryWithCookies($, firstRequest) {
+    const metaContent = $('meta[http-equiv="refresh"]').attr('content')
+    const redirect = url + '?&' + metaContent.substring(metaContent.lastIndexOf('bm-verify'), metaContent.length - 1)
+    headers.Cookie = firstRequest.headers['set-cookie'][0]
+
+    const secondRequest = await axios.get(redirect,{headers: headers}).catch(error => {
+        console.log(`2`,error)
+    })
+    return (secondRequest.data); 
 }
